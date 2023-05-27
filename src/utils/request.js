@@ -1,4 +1,7 @@
 import axios from 'axios'
+import { getToken } from '@/utils/auth'
+import { Message } from 'element-ui'
+
 const service = axios.create({
   baseURL: 'https://api-hmzs.itheima.net/v1',
   timeout: 5000 // request timeout
@@ -7,6 +10,10 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   config => {
+    const token = getToken()
+    if (token) {
+      config.headers.Authorization = token
+    }
     return config
   },
   error => {
@@ -20,6 +27,13 @@ service.interceptors.response.use(
     return response.data
   },
   error => {
+    console.dir(error)
+    if (error.response.data.msg) {
+      Message({
+        type: 'warning',
+        message: error.response.data.msg
+      })
+    }
     return Promise.reject(error)
   }
 )

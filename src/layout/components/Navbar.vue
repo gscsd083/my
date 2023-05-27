@@ -27,7 +27,15 @@ export default {
   methods: {
     // 退出登录
     logout() {
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$confirm('你确定以及肯定要退出登录嘛?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(111)
+        this.$store.commit('user/removeToken')
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      }).catch(() => {})
     }
   }
 }
