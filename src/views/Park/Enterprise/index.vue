@@ -7,7 +7,7 @@
       <el-button type="primary" @click="getList">查询</el-button>
     </div>
     <div class="create-container">
-      <el-button type="primary">添加企业</el-button>
+      <el-button type="primary" @click="$router.push('/enterpriseAdd')">添加企业</el-button>
     </div>
     <!-- 表格区域 -->
     <div class="table">
@@ -23,7 +23,7 @@
           <template #default="scope">
             <el-button size="mini" type="text">添加合同</el-button>
             <el-button size="mini" type="text">查看</el-button>
-            <el-button size="mini" type="text">编辑</el-button>
+            <el-button size="mini" type="text" @click="editRent(scope.row.id)">编辑</el-button>
             <el-button size="mini" type="text">删除</el-button>
           </template>
         </el-table-column>
@@ -32,6 +32,9 @@
     <div class="page-container">
       <el-pagination
         layout="total, prev, pager, next"
+        :total="total"
+        :page-size="params.pageSize"
+        @current-change="pageChange"
       />
     </div>
   </div>
@@ -44,9 +47,10 @@ export default {
     return {
       params: {
         page: 1, // 页数
-        pagsSize: 10, // 每页条数
+        pageSize: 10, // 每页条数
         name: '' // 搜索关键词
       },
+      total: 0,
       tableList: [] // 列表
     }
   },
@@ -57,9 +61,22 @@ export default {
     async getList() {
       const res = await getExterpriseListAPI(this.params)
       this.tableList = res.data.rows
+      this.total = res.data.total
     },
     clearSearch() {
       this.getList()
+    },
+    pageChange(v) {
+      this.params.page = v
+      this.getList()
+    },
+    editRent(id) {
+      this.$router.push({
+        path: '/enterpriseAdd',
+        query: {
+          id
+        }
+      })
     }
   }
 }

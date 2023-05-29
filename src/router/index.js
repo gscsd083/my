@@ -108,6 +108,10 @@ export const routes = [
     }]
   },
   {
+    path: '/enterpriseAdd',
+    component: () => import('@/views/Park/Enterprise/add.vue')
+  },
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
