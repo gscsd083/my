@@ -13,3 +13,41 @@ export function getBuildingListAPI(params) {
     params
   })
 }
+
+/**
+ * 添加楼宇
+ * @param {*} data
+ * @returns
+ */
+export function createBuildingListAPI(data) {
+  return request({
+    url: '/park/building',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * 删除楼宇
+ * @param {*} data
+ * @returns
+ */
+export function delBuildingListAPI(id) {
+  return request({
+    url: `/park/building/${id}`,
+    method: 'DELETE'
+  })
+}
+
+/**
+ * 添加楼宇
+ * @param {*} data
+ * @returns
+ */
+export function editBuildingListAPI(data) {
+  return request({
+    url: '/park/building',
+    method: 'PUT',
+    data
+  })
+}
