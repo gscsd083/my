@@ -3,7 +3,8 @@ import { getToken } from '@/utils/auth'
 import { Message } from 'element-ui'
 
 const service = axios.create({
-  baseURL: 'https://api-hmzs.itheima.net/v1',
+  // baseURL: 'https://api-hmzs.itheima.net/v1',
+  baseURL: 'https://api-hmzs.itheima.net/api',
   timeout: 10000 // request timeout
 })
 

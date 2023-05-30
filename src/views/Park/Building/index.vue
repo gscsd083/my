@@ -15,7 +15,7 @@
     </div>
     <!-- 添加楼宇弹框 -->
     <el-dialog
-      title="添加楼宇"
+      :title="addForm.id?'修改楼宇':'添加楼宇'"
       :visible="dialogVisible"
       width="580px"
       @close="closeDialog"
@@ -231,7 +231,7 @@ export default {
       }).catch(() => {})
     },
     // 编辑
-    async edit(row) {
+    edit(row) {
       // 1. 打开弹框
       this.dialogVisible = true
       // 2. 解构必要字段
