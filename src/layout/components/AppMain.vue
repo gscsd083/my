@@ -25,10 +25,10 @@ export default {
 }
 .app-main {
   /*50 = navbar  */
-  min-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
   width: 100%;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
   background-color: #fff;
   padding:20px 20px 0;
 }

@@ -18,26 +18,42 @@
       </div>
       <el-button class="addBtn" size="mini">添加角色</el-button>
     </div>
-    <div class="right-wrapper">
-      <div class="tree-wrapper">
-        <div v-for="item in treeList" :key="item.id" class="tree-item">
-          <div class="tree-title">{{ item.title }}</div>
-          <el-tree
-            ref="tree"
-            :data="item.children"
-            show-checkbox
-            default-expand-all
-            node-key="id"
-            :props="{ label: 'title' }"
-          />
+    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+      <el-tab-pane label="功能权限" name="tree">
+        <div class="right-wrapper">
+          <div class="tree-wrapper">
+            <div v-for="item in treeList" :key="item.id" class="tree-item">
+              <div class="tree-title">{{ item.title }}</div>
+              <el-tree
+                ref="tree"
+                :data="item.children"
+                show-checkbox
+                default-expand-all
+                node-key="id"
+                :props="{ label: 'title' }"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </el-tab-pane>
+      <el-tab-pane label="成员列表(100)" name="number">
+        成员列表
+      </el-tab-pane>
+    </el-tabs>
+
   </div>
 </template>
 
 <script>
 import { getRoleListAPI, getTreeListAPI, getRoleDetailAPI } from '@/api/system'
+function addDisabled(threeList) {
+  threeList.forEach(item => {
+    item.disabled = true
+    if (item.children && item.children.length > 0) {
+      addDisabled(item.children)
+    }
+  })
+}
 export default {
   name: 'Role',
   data() {
@@ -45,7 +61,8 @@ export default {
       roleList: [], // 角色列表
       currentIndex: 0, // 当前选中第几项
       treeList: [], // 权限树形列表
-      perms: [] // 当前角色权限点列表
+      perms: [], // 当前角色权限点列表
+      activeName: 'tree' // 选项卡选中项
     }
   },
   async mounted() {
@@ -66,18 +83,24 @@ export default {
       this.currentIndex = index
       this.treeInstance(id)
     },
+    // 获取tree数据
     async treeInstance(id) {
       const res = await getRoleDetailAPI(id)
       this.perms = res.data.perms
       this.$refs['tree'].forEach((treeInstance, key) => {
-        treeInstance.setCheckedKeys(res.data.perms[key])
+        treeInstance.setCheckedKeys(this.perms[key])
       })
-      console.log(res.data.perms)
+      console.log(this.perms)
     },
     // 拿到树形数据
     async getTreeList() {
       const res = await getTreeListAPI()
       this.treeList = res.data
+      addDisabled(this.treeList)
+    },
+    // 切换选项卡执行
+    handleClick(tab, event) {
+      console.log(tab, event)
     }
   }
 }
