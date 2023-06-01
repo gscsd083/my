@@ -34,6 +34,7 @@
                     size="mini"
                     type="text"
                     :disabled="scope.row.status !== 3"
+                    @click="delRent(scope.row.id)"
                   >删除</el-button>
                 </template>
               </el-table-column>
@@ -116,7 +117,7 @@
 </template>
 
 <script>
-import { getExterpriseListAPI, getRentListAPI, delExterpriseAPI, getRentBuildListAPI, uploadAPI, createRentAPI, outRentAPI } from '@/api/enterprise'
+import { getExterpriseListAPI, getRentListAPI, delExterpriseAPI, getRentBuildListAPI, uploadAPI, createRentAPI, outRentAPI, delRentAPI } from '@/api/enterprise'
 export default {
   data() {
     return {
@@ -170,6 +171,28 @@ export default {
         this.$message({
           type: 'success',
           message: '退租成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    // 删除合同
+    async delRent(id) {
+      this.$confirm('确认删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        // 1. 调用接口
+        await delRentAPI(id)
+        // 2. 重新拉取列表
+        this.getList()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
         })
       }).catch(() => {
         this.$message({

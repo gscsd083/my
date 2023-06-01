@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { getToken } from '@/utils/auth'
 import { Message } from 'element-ui'
-
+import router from '@/router'
+import store from '@/store'
 const service = axios.create({
   // baseURL: 'https://api-hmzs.itheima.net/v1',
   baseURL: 'https://api-hmzs.itheima.net/api',
@@ -34,6 +35,12 @@ service.interceptors.response.use(
         type: 'warning',
         message: error.response.data.msg
       })
+    }
+    if (error.response.status === 401) {
+      //  清空用户数据
+      store.commit('user/removeToken')
+      //  跳转到登录
+      router.push('/login')
     }
     return Promise.reject(error)
   }

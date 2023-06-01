@@ -15,3 +15,4 @@ tests/**/coverage/
 *.sln
 *.lock
 node_modules/
+函数封装练习/
