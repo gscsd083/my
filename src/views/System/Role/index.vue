@@ -13,51 +13,77 @@
           {{ item.roleName }}
         </div>
         <div class="more">
-          <svg-icon icon-class="more" name="more" />
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              <svg-icon icon-class="more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="$router.push({path:'/roleAdd',query:{id:`${item.roleId}`} })">编辑角色</el-dropdown-item>
+              <el-dropdown-item @click.native="delRole(item.roleId)">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
-      <el-button class="addBtn" size="mini">添加角色</el-button>
+      <el-button class="addBtn" size="mini" @click="$router.push('/roleAdd')">
+        添加角色
+      </el-button>
     </div>
-    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="功能权限" name="tree">
-        <div class="right-wrapper">
-          <div class="tree-wrapper">
-            <div v-for="item in treeList" :key="item.id" class="tree-item">
-              <div class="tree-title">{{ item.title }}</div>
-              <el-tree
-                ref="tree"
-                :data="item.children"
-                show-checkbox
-                default-expand-all
-                node-key="id"
-                :props="{ label: 'title' }"
-              />
+    <div class="right-wrapper">
+      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tab-pane label="功能权限" name="tree">
+          <div class="right-wrapper">
+            <div class="tree-wrapper">
+              <div v-for="item in treeList" :key="item.id" class="tree-item">
+                <div class="tree-title">{{ item.title }}</div>
+                <el-tree
+                  ref="tree"
+                  :data="item.children"
+                  show-checkbox
+                  default-expand-all
+                  node-key="id"
+                  :props="{ label: 'title' }"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="成员列表(100)" name="number">
-        成员列表
-      </el-tab-pane>
-    </el-tabs>
+        </el-tab-pane>
+        <el-tab-pane :label="`成员列表(${memeberTotal})`" name="user">
+          <div class="user-wrapper">
+            <el-table
+              :data="roleUserList"
+              style="width: 100%"
+            >
+              <el-table-column
+                type="index"
+                width="250"
+                label="序号"
+              />
+              <el-table-column
+                prop="name"
+                label="员工姓名"
+              />
+              <el-table-column
+                prop="userName"
+                label="登录账号"
+              />
+            </el-table>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
 
   </div>
 </template>
 
 <script>
-import { getRoleListAPI, getTreeListAPI, getRoleDetailAPI } from '@/api/system'
-function addDisabled(threeList) {
-  threeList.forEach(item => {
-    item.disabled = true
-    if (item.children && item.children.length > 0) {
-      addDisabled(item.children)
-    }
-  })
-}
+import { getRoleListAPI, getTreeListAPI, getRoleDetailAPI, getRoleUserAPI, delRoleUserAPI } from '@/api/system'
+import { addDisabled } from '@/utils/format'
 export default {
   name: 'Role',
   data() {
     return {
+      memeberTotal: 0, // 当前成员数
+      roleUserList: [], // 当前角色下的成员列表
       roleList: [], // 角色列表
       currentIndex: 0, // 当前选中第几项
       treeList: [], // 权限树形列表
@@ -69,10 +95,32 @@ export default {
     await this.getRoleList()
     await this.getTreeList()
     this.treeInstance(this.roleList[0].roleId)
+    this.getRoleUserList(this.roleList[0].roleId)
   },
   created() {
   },
   methods: {
+    // 删除
+    delRole(roleId) {
+      this.$confirm('是否确认删除当前角色?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        await delRoleUserAPI(roleId)
+        this.getRoleList()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      })
+    },
+    // 获取角色成员
+    async getRoleUserList(roleId) {
+      const res = await getRoleUserAPI(roleId)
+      this.roleUserList = res.data.rows
+      this.memeberTotal = res.data.total
+    },
     // 添加角色获取数据
     async getRoleList() {
       const ress = await getRoleListAPI()
@@ -82,6 +130,7 @@ export default {
     async switchRoule(id, index) {
       this.currentIndex = index
       this.treeInstance(id)
+      this.getRoleUserList(id)
     },
     // 获取tree数据
     async treeInstance(id) {
@@ -90,7 +139,6 @@ export default {
       this.$refs['tree'].forEach((treeInstance, key) => {
         treeInstance.setCheckedKeys(this.perms[key])
       })
-      console.log(this.perms)
     },
     // 拿到树形数据
     async getTreeList() {

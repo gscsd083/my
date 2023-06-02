@@ -32,3 +32,48 @@ export function getRoleDetailAPI(roleId) {
     url: `/park/sys/role/${roleId}`
   })
 }
+
+/**
+ * 获取角色成员列表
+ * @returns
+ */
+export function getRoleUserAPI(roleId) {
+  return request({
+    url: `/park/sys/roleUser/${roleId}`
+  })
+}
+
+/**
+ * 获取角色成员列表
+ * @returns
+ */
+export function createRoleUserAPI(data) {
+  return request({
+    method: 'POST',
+    url: `/park/sys/role`,
+    data
+  })
+}
+
+/**
+ * 修改角色成员列表
+ * @returns
+ */
+export function updataRoleAPI(data) {
+  return request({
+    method: 'PUT',
+    url: `/park/sys/role`,
+    data
+  })
+}
+
+/**
+ * 删除角色
+ * @returns
+ */
+export function delRoleUserAPI(roleId) {
+  return request({
+    url: `/park/sys/role/${roleId}`,
+    method: 'DELETE'
+  })
+}

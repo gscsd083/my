@@ -27,3 +27,44 @@ export function getpoleListAPI() {
   })
 }
 
+/**
+ * @description: 添加
+ * @param {*} data { page,pageSize,name}
+ * @return {*} promise
+ *   https://api-hmzs.itheima.net/v1/pole/info
+ */
+export function createRouListAPI(data) {
+  return request({
+    url: '/pole/info',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * @description: 删除
+ * @param {*} data { page,pageSize,name}
+ * @return {*} promise
+ *  https://api-hmzs.itheima.net/v1/pole/info/{ids}
+ */
+export function delRouListAPI(ids) {
+  return request({
+    url: `/pole/info/${ids}`,
+    method: 'DELETE'
+  })
+}
+
+/**
+ * @description: 编辑
+ * @param {*} data { page,pageSize,name}
+ * @return {*} promise
+ *  h https://api-hmzs.itheima.net/v1/pole/info
+ */
+export function infoRouListAPI(data) {
+  return request({
+    url: '/pole/info',
+    method: 'PUT',
+    data
+  })
+}
+

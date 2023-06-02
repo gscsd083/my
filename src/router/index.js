@@ -112,6 +112,10 @@ export const routes = [
     component: () => import('@/views/Park/Enterprise/add.vue')
   },
   {
+    path: '/roleAdd',
+    component: () => import('@/views/System/Role/addRole')
+  },
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
