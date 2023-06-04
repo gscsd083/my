@@ -70,15 +70,15 @@ import { getIndustryListAPI, uploadAPI, createExterpriseAPI, getEnterpriseDetail
 export default {
   name: 'AppAdd',
   data() {
-    const validataMobile = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入手机号'))
-      } else if (/^1[3-9]\d{9}$/.test(value)) {
-        callback()
-      } else {
-        callback(new Error('手机号格式不正确'))
-      }
-    }
+    // const validataMobile = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请输入手机号'))
+    //   } else if (/^1[3-9]\d{9}$/.test(value)) {
+    //     callback()
+    //   } else {
+    //     callback(new Error('手机号格式不正确'))
+    //   }
+    // }
     return {
       addForm: {
         name: '', // 企业名称
@@ -107,7 +107,9 @@ export default {
           { required: true, message: '请输入企业联系人', trigger: 'blur' }
         ],
         contactNumber: [
-          { validator: validataMobile, trigger: 'blur' }
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { pattern: /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1589]))\d{8}$/, message: '手机号格式不正确', trigger: 'blur' }
+          // { validator: validataMobile, trigger: 'blur' }
         ],
         businessLicenseId: [
           { required: true, message: '请上传合同文件' }

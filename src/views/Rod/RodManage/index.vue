@@ -186,7 +186,8 @@ export default {
           { required: true, message: '请输入一体杆编号', trigger: 'blur' }
         ],
         poleIp: [
-          { required: true, message: '请输入一体杆IP', trigger: 'blur' }
+          { required: true, message: '请输入一体杆IP', trigger: 'blur' },
+          { pattern: /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/, message: '请输入正确的IP格式', trigger: 'blur' }
         ],
         areaId: [
           { required: true, message: '请选择一体杆关联区域', trigger: 'blur' }
