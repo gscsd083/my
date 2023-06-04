@@ -162,6 +162,7 @@ export default {
     // 编辑数据回填
     async edit(Id) {
       const res = await getEmployeeAllAPI(Id)
+      console.log(res)
       const { id, name, userName, roleId, roleName, status, phonenumber } = res.data
       this.addForm = { id, name, userName, roleId, roleName, status, phonenumber }
       this.addEmployee()

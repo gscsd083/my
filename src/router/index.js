@@ -73,6 +73,21 @@ export const routes = [
       meta: { title: '计费规则管理' }
     }]
   },
+  // {
+  //   path: '/propety/cost',
+  //   permission: 'park:propety',
+  //   meta: { title: '物业费管理管理', icon: 'el-icon-loading' },
+  //   component: () => import('@/views/Propety/index')
+  // },
+  {
+    path: '/propety/cost',
+    component: Layout,
+    children: [{
+      path: '',
+      component: () => import('@/views/Propety/index'),
+      meta: { title: '物业费管理', icon: 'el-icon-loading' }
+    }]
+  },
   {
     path: '/pole',
     component: Layout,
