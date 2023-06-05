@@ -34,6 +34,7 @@ export default {
       }).then(() => {
         console.log(111)
         this.$store.commit('user/removeToken')
+        this.$store.commit('menu/resetMenu')
         this.$router.push(`/login?redirect=${this.$route.fullPath}`)
       }).catch(() => {})
     }

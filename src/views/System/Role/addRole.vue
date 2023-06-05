@@ -45,6 +45,7 @@
                 :data="item.children"
                 show-checkbox
                 default-expand-all
+                node-strictly
                 node-key="id"
                 :props="{ label: 'title' }"
               />
