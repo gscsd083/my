@@ -59,9 +59,9 @@ export const asyncRoutes = [
     permission: 'property',
     children: [{
       path: '',
-      permission: 'property:propertyFee',
-      component: () => import('@/views/Propety/index'),
-      meta: { title: '物业费管理', icon: 'el-icon-loading' }
+      permission: 'property:propertyFee', // 权限控制
+      component: () => import('@/views/Propety/index'), // 路由跳转的页面
+      meta: { title: '物业费管理', icon: 'el-icon-loading' } // 导航渲染的路由名称和图标
     }]
   },
   {

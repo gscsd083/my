@@ -20,6 +20,8 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+// 注册全局指令
+import './permission'
 // vue实例化
 new Vue({
   el: '#app',
