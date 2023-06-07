@@ -9,10 +9,10 @@ export default {
     setMenuList(state, asyncRoutes) {
       // 把静态表和动态表合并为一个数组 当前用户拥有的所有的路由表
       state.menuList = [...contantsRoutes, ...asyncRoutes]
+    },
+    resetMenu(state) {
+      state.menuList = [...contantsRoutes]
+      resetRouter()
     }
-  },
-  resetMenu(state) {
-    state.menuList = [...contantsRoutes]
-    resetRouter()
   }
 }

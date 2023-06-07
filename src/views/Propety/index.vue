@@ -37,7 +37,7 @@
         <el-table-column label="缴费时间" prop="createTime" />
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button size="mini" type="text">查看</el-button>
+            <el-button size="mini" type="text" @click="lookConfir(scope.row)">查看</el-button>
             <el-button size="mini" type="text" @click="delExterprise(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -56,13 +56,13 @@
     />
     <!-- 添加弹框 -->
     <el-dialog
-      :title="addForm.id?'添加账单':'查看账单'"
+      :title="addForm.id?'查看账单':'添加账单'"
       :visible="dialogVisible"
       width="580px"
       @close="closeDialog"
     >
       <!-- 表单接口 -->
-      <div class="form-container">
+      <div v-show="!addForm.id" class="form-container">
         <el-form ref="addForm" :model="addForm" :rules="addFormRules">
           <el-form-item label="选择租户" prop="enterpriseId">
             <el-select v-model="addForm.enterpriseId" placeholder="请选择租户">
@@ -106,6 +106,16 @@
           </el-form-item>
         </el-form>
       </div>
+      <!-- 查看列表 -->
+      <div v-show="addForm.id">
+        <p>租户名称：{{ addForm.enterpriseName }}</p>
+        <p>租赁楼宇：{{ addForm.buildingName }}</p>
+        <p>缴费周期：{{ addForm.startTime }}至{{ addForm.endTime }} </p>
+        <p>物业费(元/m²)： {{ addForm.propertyFeePrice }}</p>
+        <p>账单金额(元)：{{ addForm.paymentAmount }}</p>
+        <p>支付方式：{{ poleTypes(addForm.paymentMethod) }}</p>
+        <p>缴费时间：{{ addForm.createTime }}</p>
+      </div>
       <template #footer>
         <el-button size="mini" @click="dialogVisible = false">取 消</el-button>
         <el-button size="mini" type="primary" @click="confirmAdd">确 定</el-button>
@@ -114,7 +124,7 @@
   </div>
 </template>
 <script>
-import { getPropetyListAPI, getEnterpriseListAllAPI, getBuildingListAllAPI, getPaymentListAllAPI, editPropertyfeeListAPI } from '@/api/propety'
+import { getPropetyListAPI, getEnterpriseListAllAPI, getBuildingListAllAPI, getPaymentListAllAPI, editPropertyfeeListAPI, delPropertyfeeListAPI } from '@/api/propety'
 export default {
   data() {
     return {
@@ -157,6 +167,9 @@ export default {
       tableList: []
     }
   },
+  computed: {
+
+  },
   watch: {
     addForm: {
       async handler(val) {
@@ -174,13 +187,48 @@ export default {
   },
   methods: {
     async doSearch() {
+      if (this.params.time === null) this.params.time = []
       const { enterpriseName = '', time: [start = '', end = ''], page, pageSize } = this.params
       const res = await getPropetyListAPI({ enterpriseName, start, end, page, pageSize })
       this.tableList = res.data.rows
       this.total = res.data.total
     },
+    // 查询时间清除
+    // cleartime() {
+    //   this.addForm.time = []
+    // },
+    // 数据映射
+    poleTypes(val) {
+      const arr = { 1: '微信', 2: '支付宝', 3: '现金' }
+      // console.log(arr[1])
+      return arr[val]
+    },
+    // 查看
+    lookConfir(row) {
+      this.dialogVisible = true
+      this.addForm = row
+    },
+    // 删除
     delExterprise(id) {
-      console.log(id)
+      this.$confirm('确认删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        // 1. 调用接口
+        await delPropertyfeeListAPI(id)
+        // 2. 重新拉取列表
+        this.doSearch()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     },
     // 分页切换每页条数
     handleSizeChange(val) {
@@ -215,6 +263,10 @@ export default {
     },
     // 添加
     async confirmAdd() {
+      if (this.addForm.id) {
+        this.closeDialog()
+        return
+      }
       this.$refs.addForm.validate(async(valid) => {
         if (valid) {
           const { enterpriseId, floors: buildingId, time: [startTime, endTime], paymentAmount, paymentMethod } = this.addForm

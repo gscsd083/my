@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
-// 登录函数
 /**
  * @description: 登录函数
  * @param {*} data { mobile,password}
- * @return {*} promise
+ * @returns promise
  */
+
 export function loginAPI(data) {
   return request({
     url: '/park/login',
@@ -15,9 +15,8 @@ export function loginAPI(data) {
 }
 
 /**
- * @description: 获取用户信息
- * @param {*} data {}
- * @return {*} promise
+ * 获取用户信息
+ * @returns
  */
 export function getProfileAPI() {
   return request({

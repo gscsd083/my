@@ -57,3 +57,15 @@ export function editPropertyfeeListAPI(data) {
     data
   })
 }
+
+/**
+ * 删除账单
+ * @param {*} id
+ * @returns  https://api-hmzs.itheima.net/v1/park/propertyfee/{id}
+ */
+export function delPropertyfeeListAPI(id) {
+  return request({
+    url: `/park/propertyfee/${id}`,
+    method: 'DELETE'
+  })
+}
