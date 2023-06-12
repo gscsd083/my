@@ -3,6 +3,11 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
+          <el-button
+            size="small"
+            plain
+            @click="$router.push('/big-screen')"
+          >可视化大屏</el-button>
           <!-- 用户名称 -->
           <span class="name">黑马管理员</span>
         </div>
@@ -31,12 +36,14 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        console.log(111)
-        this.$store.commit('user/removeToken')
-        this.$store.commit('menu/resetMenu')
-        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-      }).catch(() => {})
+      })
+        .then(() => {
+          console.log(111)
+          this.$store.commit('user/removeToken')
+          this.$store.commit('menu/resetMenu')
+          this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+        })
+        .catch(() => {})
     }
   }
 }
@@ -122,9 +129,10 @@ export default {
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
-        .name{
+        .name {
           font-weight: 600;
           cursor: pointer;
+          margin-left: 20px;
         }
       }
     }

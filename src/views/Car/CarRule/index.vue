@@ -21,7 +21,11 @@
         <el-table-column label="操作" fixed="right" width="120">
           <template #default="scope">
             <el-button size="mini" type="text">编辑</el-button>
-            <el-button size="mini" type="text">删除</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="delCarRule(scope.row.id)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -30,7 +34,7 @@
 </template>
 
 <script>
-import { getRuleListAPI } from '@/api/car'
+import { getRuleListAPI, delRuleListAPI } from '@/api/car'
 import { utils, writeFileXLSX } from 'xlsx'
 export default {
   name: 'Building',
@@ -50,7 +54,29 @@ export default {
   },
 
   methods: {
-  // 获取规则列表
+    // 刪除
+    async delCarRule(id) {
+      this.$confirm('确认删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        // 1. 调用接口
+        await delRuleListAPI(id)
+        // 2. 重新拉取列表
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        this.getList()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    // 获取规则列表
     async getRuleList() {
       const res = await getRuleListAPI(this.params)
       this.ruleList = res.data.rows
@@ -61,15 +87,21 @@ export default {
         duration: '按时长收费',
         turn: '按次收费',
         partition: '分段收费'
-
       }
       return MAP[v]
     },
     // 导出excel
     async exportToExcel() {
       const res = await getRuleListAPI(this.params)
-      const tableHeader = ['ruleNumber', 'ruleName', 'freeDuration', 'chargeCeiling', 'chargeType', 'ruleNameView']
-      const sheetData = res.data.rows.map((item) => {
+      const tableHeader = [
+        'ruleNumber',
+        'ruleName',
+        'freeDuration',
+        'chargeCeiling',
+        'chargeType',
+        'ruleNameView'
+      ]
+      const sheetData = res.data.rows.map(item => {
         const obj = {}
         tableHeader.forEach(key => {
           if (key === 'chargeType') {
@@ -87,7 +119,20 @@ export default {
       // 把工作表添加到工作簿
       utils.book_append_sheet(workbook, worksheet, 'Data')
       // 改写表头
-      utils.sheet_add_aoa(worksheet, [['计费规则编号', '计费规则名称', '免费时长(分钟)', '收费上线(元)', '计费方式', '计费规则']], { origin: 'A1' })
+      utils.sheet_add_aoa(
+        worksheet,
+        [
+          [
+            '计费规则编号',
+            '计费规则名称',
+            '免费时长(分钟)',
+            '收费上线(元)',
+            '计费方式',
+            '计费规则'
+          ]
+        ],
+        { origin: 'A1' }
+      )
       writeFileXLSX(workbook, '停车计费规则.xlsx')
     }
   }
@@ -103,7 +148,7 @@ export default {
 .search-container {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgb(237, 237, 237, .9);
+  border-bottom: 1px solid rgb(237, 237, 237, 0.9);
   padding-bottom: 20px;
 
   .search-label {
@@ -115,14 +160,14 @@ export default {
     margin-right: 10px;
   }
 }
-.create-container{
+.create-container {
   margin: 10px 0px;
 }
-.page-container{
-  padding:4px 0px;
+.page-container {
+  padding: 4px 0px;
   text-align: right;
 }
-.form-container{
-  padding:0px 80px;
+.form-container {
+  padding: 0px 80px;
 }
 </style>

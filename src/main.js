@@ -11,6 +11,8 @@ import store from './store'
 
 import router from './router'
 
+import WujieVue from 'wujie-vue2'
+Vue.use(WujieVue)
 // 注册svg
 import '@/icons'
 
